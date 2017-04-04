@@ -118,7 +118,13 @@ STRING_HANDLE STRING_construct(const char* psz)
     }
     return result;
 }
-
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
+#elif defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+#endif
 STRING_HANDLE STRING_construct_sprintf(const char* format, ...)
 {
     STRING* result;
@@ -191,6 +197,11 @@ STRING_HANDLE STRING_construct_sprintf(const char* format, ...)
     /* Codes_SRS_STRING_07_045: [STRING_construct_sprintf shall allocate a new string with the value of the specified printf formated const char. ] */
     return (STRING_HANDLE)result;
 }
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#elif defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 /*this function will return a new STRING with the memory for the actual string passed in as a parameter.*/
 /*return NULL if it fails.*/
@@ -507,6 +518,9 @@ int STRING_copy_n(STRING_HANDLE handle, const char* s2, size_t n)
     return result;
 }
 
+#if defined(__GNUC__)
+__attribute__ ((format (printf, 2, 3)))
+#endif
 int STRING_sprintf(STRING_HANDLE handle, const char* format, ...)
 {
     int result;
